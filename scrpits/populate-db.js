@@ -1,0 +1,75 @@
+// scripts/populate-db.js
+const mongoose = require("mongoose");
+const Image = require("../models/Images.js");
+const dotenv = require("dotenv");
+
+dotenv.config({ path: "../.env.local" });
+
+const MONGODB_URI = process.env.MONGODB_URI;
+
+const imageUrls = [
+  "https://lh7-us.googleusercontent.com/F8cfLPBsTuXGTiI9nmo7J1piKBdkAxm2gNdJ6b1o67GO3oXyF5-5AH8N8EiIKnWgqblEkOSrWhGBl9heUeeNxPfuK_d9Vnnn-l33S9M1kQi3I2GzL04KV787_e4oQ6dtveGHXy-BH3kvnQO8=s800",
+  "https://lh7-us.googleusercontent.com/hFfPShoXPhaL5dYrzbSQm2_jSiXMLMki6mL74dqhOLLd0qbC0n7Dgtwy25RlMRaNoA1d3MdD7imSdQ-iY9wIJHUFakrBHnFXWUqRrx3WvEinY9xLW7vkRLlSvPFD2IpsFqzokkuHcQmtpCL3=s800",
+  "https://lh7-us.googleusercontent.com/qZq_SvG_5dC60bvQF5KUs9n6YKEuMFLYqz4i_3ers8CEFm5XeSweKc_9atWAs7TMAKW80I3ruBRi0WuBMA-GfEJRfBr42c14Z7BzcBl-yyYlA4oD-Inm8ENSGJqXSQahzz15eMyNWEdIdghb=s800",
+  "https://lh7-us.googleusercontent.com/x3EHU-rDaFqT3nCKuQW6tG1FZ4SLbnGqarfAocjgUBARRyuzMTLtG1Z_sXhg1i5e2arlMxSfsiCUhX1op6_0srT7uD6WXITOfbHF5be-58lq8OOfqwZsoAqAV4RhxVN3yrZKnRMPl6zHh1Q2=s800",
+  "https://lh7-us.googleusercontent.com/-4Pdx1Q9qd64jZSyoRBJXWeBX4cENB-SjCH8iTizAtLz9G0u4a1YgmbRPQVxXbUeT74LgtK-RhT4hEsNog6w-0oGmH9mAwi3NRry7dUQx7Y6QbfeT0ix9gHJDHYzMRFHej02C_ee5lEujL0W=s800",
+  "https://lh7-us.googleusercontent.com/acisOpSCAMTbB-06GX1r1cWK6V4RV-EFxckSbN7ip4Nb079UFXoNNCm5eDF9mtw-djXsfiqsbOQF70uGTi9qE1hQI-ipoKjGFfyhPtq8J5bSmutHcu9Si2FSucrEcalsG5q8wEEdo9S6USJt=s800",
+  "https://lh7-us.googleusercontent.com/G8mYMCTBTIKDSV4EYOhvS29BRId2h30W4jvZO_fyT4N1TOKWL6IV77cl9xIpZtNSHkOPLXWoDe5f3PvmnYqtLb9zVC3NF5gM0leI2peOu0ob0hKAoUUYw9q1Zo3UnjwlVaoao9j18a-r4kTJ=s800",
+  "https://lh7-us.googleusercontent.com/KQtYwiABHuB2AaZbinKlAMN4Pqj6109YzRy6Pt2ZXTpAKIE9Zrb7VSRXqQWbKT0PubjepAIfsj2ih8DtmnVVAmEkIz4Bc3b0CLm5TWqoaqFFP5HJQTWp33aAIqFRxS_ZHDDbzU28qx3ru2P1=s800",
+  "https://lh7-us.googleusercontent.com/FMGRDjf8EldIRiEisTYjubmHQ_vP6ZUUaNBsRLx3DIDQoRPNqJQLjKQ2Gp7_Ihq-4XYA3ypeou4_SFmBYpntg5qt7bNPbVh16M-zFT1KvBotoHR7tp4F8sbZ_vFAGXKPhKbLJ4afjVya89wA=s800",
+  "https://lh7-us.googleusercontent.com/8O53Y_UJkn7hn-PtaXG-4iwiqri0nhMIohqXNULRKEjMpcyAzBLr1iU6UecNrlWbC64ofyenYder3u3JzBpcb6dja1WZk4fGJXs91cmsACAZS-2H_C8sK2bkrF8nnCf-wl7shpFKlj_991bo=s800",
+  "https://lh7-us.googleusercontent.com/lNOFdXKGfPRDEF3XkIl3hVz8IHoJkDsZKlhqJnEJiEmpvMKhNxPKoS_hGmiRuOSqvqHfT9V0BtWGqeBTCYxAqgzIT3-K_yZFZSd4u4HyEafokpGJQbh84qAlKz9weTUBH3twKMIGgBxUpRyq=s800",
+  "https://lh7-us.googleusercontent.com/2o9jNsFTH_ZtKiD_PdAPcQFAsIZ2_t5dzy4VW4x6lOq8KdozZf4pCodFTtg0G1S011S0nnTvag8juzEs0dbFyg2Xj-_jScV_tLC2qmB56C2hPcHdoMQuVepDfU7ugyvO98TEjx3XUtRJ_bK7=s800",
+  "https://lh7-us.googleusercontent.com/YLjfGwRSPr7VB1cZd5kZ6u9uKmqJGK0mXX3ymh2mNGcMOufxVkcu6d7V0g2rl3_EDSzOM8i4YDsp2o46FWhtG_wIyGtRSeBR7RqGyLyH159ASsi9A60lGIdeizjeOHRFg2hCo1iUqezU4T3U=s800",
+  "https://lh7-us.googleusercontent.com/iZU6Vne9tBKLPL5eQA3l-04KhU4uXid_rmTWU5LjeXE_lifcIunWLlgf-m40rdNaqD84fhCkL1G7meANpULkKneaFd8u7Smk4eT5pq9AdfchfqT5azwg1BGJkWLixVqVUYE9rr29E9j14WOS=s800",
+  "https://lh7-us.googleusercontent.com/d2NEbC5KQYWNWIbFYaORXn-ljUddYtlmoW03kOfrR-2x7Iyt7Ngqv5RHj5BfPg61zHqeNl8pFSuODCQ4XTTkxwZGFHx1wByWscB9o8L4JZsgJkSjq4mzM4L0tIKWoS6FZjX0slxBrysUXAGw=s800",
+  "https://lh7-us.googleusercontent.com/0CfxDNzn5-Lh1XvnHsNBQNSqKXTLwbT4yR0BK5I96EHy8EKSGQQ9P9UGwDCOWrsgsxnhWwPrwooL_sTdkv9jlad1qXuv6DPCdVxCB8m1cUj1XQBd9nSDfljhSYmJHnIu_Cg6bijVjAab7A4n=s800",
+  "https://lh7-us.googleusercontent.com/7xtNO0h3xE5W8t_sinOsN9-CRKdcDR_VOlc7lQzPzQxoKNgh7dmIcwbYY1-nYR9sBf86ujgdpmsGyK0StfP4YXvuzkiAyL2wFvrIu-61pzu0H9r_qg9USqXU7WQTWzeqU06SiajsO-gtp2Uh=s800",
+  "https://lh7-us.googleusercontent.com/RBRJ0nm3Aajxx6H-_2JYJdg_c9V5oymX6FEiqtw9Mn4Jx0HRmsYldnua0vBQR9m9ktlCIJkFEDZMH8UdgKzuvh2NBNub3ZbXIAbDuT4X3k77CFlLW_7vY6dCxnPLAE8oXaZ6joRjY_JKe71X=s800",
+  "https://lh7-us.googleusercontent.com/yA7UKAMqRAiY5DDPGHT_5N5R6D8SCjIefBh9OvR16sx10RGwfh1IPyme7tdoDZG6I5MAoAXXtrC3xKLVTUbsthnkfc3fmx60S-Stn7hSNOrK-nGjHqE8R7GFf4E4YXI5Q3iKw285jx1PFIDP=s800",
+  "https://lh7-us.googleusercontent.com/inqKEimHwYLKfHVl12DQot5N199psXhRfXD4BpI6tT0LvK9mv6m-h0OQi0ZSAPYDxUrQnFpjBbpiY6lC48z5B1oIi7-kBs0D9zt_gmqC5m1cReclvyUN_113PZPJETA7wmWEjch4P-RsYJ1h=s800",
+  "https://lh7-us.googleusercontent.com/7_SzQZ6mbNqB3I3AX9TN08ex8inLpH9YEpf91hyQDTxCrONdZU5wmEctP35o-59FRxR-jMfppBdbphkKb5xbiaOocfbDmTJSvCnICPaXNDRUwX6aSkMcIndi4_4D8EJpElG5LOXZfisRyXGl=s800",
+  "https://lh7-us.googleusercontent.com/6vMiVOqfuh2selBR6lGOojGVkjtAzCfDTQI0HbE1FXGjpbfODlOuaKtrNZfs4YPGLzepsZ5aJZySySK6OOdgwt5IX3EWm-9yQtj-tHWK1UjHZ6b2Gnfb92DkE7vUP53iiIeNTMezgAKdFvgc=s800",
+  "https://lh7-us.googleusercontent.com/0AhDUdpslp7SV-vNwd5SG2XpD2uZ8ySPeEmSquG0gBY5Dq6uszmCJXwOOBWlo3QTqfrF1H1lKeE0pWP5hX7axnpuhsNANgxVpm9Xnhsw7qpKGchhE4smUZNMRqiBqWJV1HNfgQzW5nYcbjLf=s800",
+  "https://lh7-us.googleusercontent.com/4XOdO_mABc6yJe10plIP2oF5kvI5fFVjAZwStw_KBrWZ3e1GM0qFdpPRoUMNSrL_lXr2eeKXIA4rivKraOz1Tea7MSjHVsbCgbeGSayQ4O-l19iTRBqfK_H9SopE7f81wqIrMWEsLfi5ZXYr=s800",
+  "https://lh7-us.googleusercontent.com/oUuzVK24jzwYK-DL_dvePdLK9AXePv68Ww_Twg2czhMYeuU3CO8_exuEE6V-CMlmmN3mJ-mxyCK4bJ5j-WIFRUYVhOmqm21TCib4E6SKpKeNwjdq_gXek1xA9IrCt_XT4zpkrdSGz_oEAVjL=s800",
+  "https://lh7-us.googleusercontent.com/Nrk_hDJC4ue3bfMsx5ihDtX-B3YGckMy9tKw_7qbv6U0qgeHKybSWvix82Em2oesrJFLPa4T-XoAM0S5fSQbs0TPUafP4dvRPqNGYJLAmVOvGlneKig5XELJRCVUoRSd0I6PbympZ0Z_Zs6T=s800",
+  "https://lh7-us.googleusercontent.com/ZW74tftgk3S0zDdBqgtsOnslz2_ZE2dqD0wQzUzkAQEVilfkN6ONzmjpwdbRq44DUOoXu-Hp0FDoXV0SNwinWvIQcRH5WA36hhBeOMKicdVulI4aUxQXiq2o0orSPrpqNShpXmQQnn6DSibh=s800",
+  "https://lh7-us.googleusercontent.com/Bg7NHgI8NOFGDuUiH6pIBJYVkwq6Ye_0qoL_n7zOheIdxK28hsVOvS5de4f_fyMyD1pnBk7yalJbmJz7lk8UhPq8ei2mhcWbbAtJeqEHeLynlekkrtrAujx8WijvKbr3v8p3Rz7JqPs8oLGm=s800",
+  "https://lh7-us.googleusercontent.com/7KPMRLq_R0s4ZLflqM7z1NfYbS9I8T-kFdF8c7iCdY_tZI8uGFrkTI7SGXe8zkStn_7HixqOEvaALSGEBr9hfAGyGaG4IgthBfP7O_760rR4rfwrUYhG_pMKhKjfrmKgrv9OPUBxCs7nMOM3=s800",
+  "https://lh7-us.googleusercontent.com/28eQoJoxoNIyAcXkHAGLxTZ9Iu9w-Ttbz137pOaWamjHmmsUZHdGfd0aUD9wDniJK4qMwVyXiVnrVfIIBZvA5RggxHqYvM-Kz8zJt1GnxwQJujKQI-jg58tB1Epgy3MwzdOMBpvAA8lICcYB=s800",
+  "https://lh7-us.googleusercontent.com/A95xFEOWmJOZ4puUhqXt4QQuEq9lbsowMcsLUuwbmA3NdDlxeJr6kQDA3wsII-8rlmqF7ukA7yLAJgll7NqAnpis4sKpRRk3hMB_MliiVZqH667DnO47qOl5qAtcMsYadMXWk79GoOkq5oJt=s800",
+  "https://lh7-us.googleusercontent.com/Qm__crYA230CpnSdujcLWZiv-T7VcGJ2SawybSYKNQcbhBmvyZOM1qdT4GwJwnY0nV-6YfDagpgAdzOtdO1wD4LORJU0mRv5bAlfrjKhkgddqqSZIeOQAggPL_vWjxJlK5dcyTrSOlnydb56=s800",
+  "https://lh7-us.googleusercontent.com/2IIRtFA32rZihg05tobCjsqJObS-hKn-xek7SDk_jT9M5_tOa40--3Yjl8GnToCQEBF8xylDB0iqN8Tu8fw-jRvl27x4Ut1mHYfkptsBPYNWdIsMrMkTd-vL4eUSKQGMqZnnsmNmF1FzDN3V=s800",
+  "https://lh7-us.googleusercontent.com/iQef-FXMKYZbKdnoBwf51-xl0Rufs-u95sQFV8sShvSzpkn7eKIk6Vs8ySuFcZNgKpygA0lkL2qvpgQIBKtnrt-6Y23XwSjXyPbm4f05M7Y3pAtzGsXkzl-uLJ4aEla7dAyYO7Bj-Sbl1DVM=s800",
+  "https://lh7-us.googleusercontent.com/dqTOJV-q1DfOlgxJhRryIOKA0jauQi7_Gn-ovdz6tVLlVn5n-hLUsuxu-1CZ0WciRIER8HQr-FAfsse8Ney9rhGRuYwNdatFTL9g0yb9LGzZBYcCGWfdXk9S7tVbqbrGzKLVyvZmptlxaOix=s800",
+  "https://lh7-us.googleusercontent.com/o6NsNr-jVOFDbC-6hyHy1qdZAcoEAbYmL7SRlnPgkFNPCJEBh9YIGRw8PqPlG--O1pVg3ChG6GRDm8X1ypThMX6TK9zP-qexA25bTgT5pE_sT0wHMgoW1kPrH8LvL0qpKXHmzU90NszTdnE1=s800",
+  "https://lh7-us.googleusercontent.com/ddQ5WkUAyBvf57eMhBsNGr7v8IULJvnL9ABoTou-A4agJc7vxDFqQf7_m59W5bAytnBv9Aph4CGDZV6c-zN5yc97ppLJEgiNBNBE1KhnxOp9pjsGtqC2UJyC3Kguflnhqv8G-xJ2pqaXALgB=s800",
+  "https://lh7-us.googleusercontent.com/qNPkjyxnVOA8P5Ha8--aOeVE77NdKHO_SRLfqvQztGylQlFClEfYq4Qypx7bhQz3itKR4dR1oa57hRsN4FWl0FIFlAkSPgNHU55yOvq5TgGmUObU3zBd5Yjr4yBHwELnGy6zeGC-QYwpsCtq=s800",
+  "https://lh7-us.googleusercontent.com/DtT5-zqjG14agy8eMGC57a9bqwJqvszc2pJKPjCxDRjdmd8C8MIIQJOnQHl5MZWPl6MfYm4z_WSKT3jKlGkKKhagvNDJ-wzCXOr9xYI0_WR7ShfebXYNZ4Wy7lLiEgdcjP1auIKbU6AHxz3I=s800",
+  "https://lh7-us.googleusercontent.com/FQ_oLot-yWGv5oVmkZ689X-YXwmftGg_zbvzMbWYTH1bOvrDd1pvYJuATo7EZ29LBwJksZhOGMxSkc1Mn5BAsPCvTMJDP_svraQWfCZdLLTiRjET3FVTg3hHq63I4kFSHZ-jqfjTmcBXdRsh=s800",
+  "https://lh7-us.googleusercontent.com/1FLOZdPlRQgN6YKomMYtfr7AQgmKqa20g_Vi8YVPh15MNwZVPw1N5PBhmwGpYAjypOayhSc6xoX2R1rZPwfXgRJu6fyhsjcZzicTzPFcHP-a2Cs1uBAPivuaR0rrjm1hdr1nSJ18ooD2hfbF=s800",
+  "https://lh7-us.googleusercontent.com/YLDbSQPos33zGhESt8Vl_TWexwqoIKZNjoszlgPKllIWpidGGkpyineCnRHLrJGiboMS9AgiL5PKhQ9vjMz25No_-UbiMYpaCD5aIkeF8NISiVrhX3Lfn88srIH0x4Z46Gv9vDFnDDjZkZ4-=s800",
+  "https://lh7-us.googleusercontent.com/gN10TOgqAkvPpG5fwEV04i7k8lVL5QfPyOiPTKIPZ41NIrQn_zKof2dO7__iDs-ineQUgjbAnatp_fEx4vxSJCvj_VbcoOAOnTsot3bFMBjSg6YXdh9HEmn_yhfa1NmopFGYbR-xbhq9SU_C=s800",
+  "https://lh7-us.googleusercontent.com/ev1Nc0hVXz3vQkf9YJn4tZM34GQCeZXd3bDouRXz8SvmBzWI7yeMdD6y50bRVyE78xo8lIKBDl1B-sCH19qOk6vPem9B7q-IwTRkTjtONzaV5Bvxo4B1Vi8hcztEKUVglNtzEUqWx0AxwnbW=s800",
+  "https://lh7-us.googleusercontent.com/iRrvf2Am-VgY__ylYCCTf0AitwdjGud4B6TZPO1RuLQTvv6aBWj2L2ziC7aWgTLhDYKb2L2X6Lch3YfIm0YEIJ0HSo2YHmO-VfuQiw19ew3L2n5C_qm0VEbPUpk8wYUpnV9TVbPBdPTd81S7=s800",
+  "https://lh7-us.googleusercontent.com/1JNbpGIzJ9iMsuVvbDZ3j6kF2ElU4C9K94A6d825PyNe2fKht7UkDtyvVe7VlxPuqyOsOERaEw6aS7YPSGzte8m73dGzczmkeR1IUaudTYhLoDgFsverPJmny3uXs71SUv5nt-hcosrf543m=s800",
+  "https://lh7-us.googleusercontent.com/C6hxTuuA__9-5MEAm41Hxzt8QhvpiHwKj4Or9j-TPIIyVft120Vcs5aetwKlS2n9LKyc9SfCao8TDmzSykk0NzwhQOE4-3Phqc8j5OIY4DPkJ4eYRM3cf9iKF1AEs8gXn3uFX4EpC0LDrLWj=s800",
+  "https://lh7-us.googleusercontent.com/GZmeQE2i8rZutntrq1GxGh-mzHEr8WEn9vSRU2U7YoPBqJgqnF-PkqwrKVxQyhv66zZTQMCNNAuv0Upr97YN6ZtBz0PeRMLzEwX1a3iHIRUomhjmxa7xd39JGwMJu6xnty1vFQOFWMk18rRp=s800",
+  "https://lh7-us.googleusercontent.com/vq-0kTnM3x3mYeULqZ2fSUxIunL9nYSMiWXmEFPLnQ6PHX8AMNQGgJobdAy_h5yb_hJAk03-b56LtD0oJ0fanE-08f5r_J_UrbfLfu09YM9mCHok9jDt-t67SQE8LOyXDV89GAK7Nxf3pIAJ=s800",
+  "https://lh7-us.googleusercontent.com/qwpfzhv21uyzENElxhcub77jGjj9WhYxGV5NGhhtULUuqLYsMuhNDANM19iXHXq64DB3FGTEdGROkyZJvzKU75V9WRHIQYQEfHJ1UppTbiG60QM4XRNwgK_D-C3SNOxVr8AMcCZTHtBIatC3=s800",
+  "https://lh7-us.googleusercontent.com/43kvZ7LoacA5Zz4BL-Ms4WzZfrDzAzvxtah5Zm1aCKWi8NyhxqQ_VZRQTf7IVy9PGxwsw5kEraCC0QaQwisUe-UBOQL-_w3P8w-VSjCi1ZdWmcoFcA_XwooLB848paY5V8paqfDHpVIhW5yP=s800",
+];
+
+const imgArray = imageUrls.map((url) => ({ url }));
+
+mongoose
+  .connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(async () => {
+    await Image.insertMany(imgArray);
+    console.log("Database populated!");
+    mongoose.disconnect();
+  })
+  .catch((err) => {
+    console.error("Error connecting to database", err);
+  });
