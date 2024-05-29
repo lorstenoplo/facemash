@@ -21,11 +21,12 @@ export default function Home() {
     fetchImages();
   };
 
-  if (loading) return (
-    <div className="h-screen w-screen bg-gray-900 text-white flex items-center justify-center">
-      <p>Loading...</p>
-    </div>
-  );
+  if (loading)
+    return (
+      <div className="h-screen w-screen bg-gray-900 text-white flex items-center justify-center">
+        <p>Loading...</p>
+      </div>
+    );
 
   return (
     <div>
@@ -34,7 +35,7 @@ export default function Home() {
       </h1>
       <div
         style={{ display: "flex", justifyContent: "space-around" }}
-        className="bg-gray-900 min-h-screen pt-6"
+        className="bg-gray-900 gap-4 min-h-screen pt-6 flex flex-col items-center justify-center sm:flex-row sm:flex-wrap sm:justify-around"
       >
         {images.map((image, index) => (
           <div key={image._id}>
@@ -43,6 +44,10 @@ export default function Home() {
               alt={`Image ${index}`}
               style={{ maxWidth: "300px" }}
             />
+            <p className="text-center text-gray-400 bg-gray-900 pt-6">
+              Description
+            </p>
+
             <button
               onClick={() => handleVote(image._id, images[1 - index]._id)}
               className="block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4"
