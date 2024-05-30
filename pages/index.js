@@ -37,9 +37,6 @@ export default function Home() {
         style={{ display: "flex", justifyContent: "space-around" }}
         className="bg-gray-900 gap-4 min-h-screen pt-6 flex flex-col items-center justify-center sm:flex-row sm:flex-wrap sm:justify-around"
       >
-          <h2 className="text-center p-4 bg-gray-800 text-white font-semibold text-2xl">
-            Your choice will help us identify the best safety equipment for the Hyperloop transportation industry.
-          </h2>
         {images.map((image, index) => (
           <div key={image._id}>
             <img
