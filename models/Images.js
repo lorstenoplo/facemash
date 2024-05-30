@@ -1,10 +1,19 @@
 // models/Image.js
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
+// import mongoose from "mongoose";
 
 const ImageSchema = new mongoose.Schema({
-  url: {
+  imgurl: {
     type: String,
     required: true,
+  },
+  desc: {
+    type: String,
+    required: true,
+  },
+  rating: {
+    type: Number,
+    default: 1200, // Initial Elo rating
   },
   wins: {
     type: Number,
@@ -14,10 +23,7 @@ const ImageSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-  rating: {
-    type: Number,
-    default: 1200, // Initial Elo rating
-  },
 });
 
-export default mongoose.models.Image || mongoose.model("Image", ImageSchema);
+module.exports = mongoose.models.Image || mongoose.model("Image", ImageSchema);
+// export default mongoose.models.Image || mongoose.model("Image", ImageSchema);

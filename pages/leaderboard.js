@@ -47,7 +47,7 @@ const Leaderboard = () => {
               <td className={styles.td}>{index + 1}</td>
               <td className={styles.td}>
                 <img
-                  src={image.url}
+                  src={image.imgurl}
                   alt={`Image ${index + 1}`}
                   className={styles.img}
                 />
