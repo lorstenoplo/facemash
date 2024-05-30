@@ -31,7 +31,7 @@ const Leaderboard = () => {
   return (
     <div className="bg-gray-900">
       <h1 className="text-2xl font-semibold text-white text-center pt-3">
-        Image Leaderboard
+        Safety Equipment Rankings
       </h1>
       <table className={styles.table}>
         <thead>
