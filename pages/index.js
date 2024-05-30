@@ -31,7 +31,7 @@ export default function Home() {
   return (
     <div>
       <h1 className="text-center p-4 bg-gray-800 text-white font-semibold text-2xl">
-        Choose one!
+        Welcome to Safety-Showdown! Your choice will help us identify the best safety equipment for the Hyperloop transportation industry.
       </h1>
       <div
         style={{ display: "flex", justifyContent: "space-around" }}
