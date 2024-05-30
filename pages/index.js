@@ -35,25 +35,25 @@ export default function Home() {
       </h1>
       <div
         style={{ display: "flex", justifyContent: "space-around" }}
-        className="bg-gray-900 gap-4 min-h-screen pt-6 flex flex-col items-center justify-center sm:flex-row sm:flex-wrap sm:justify-around"
+        className="bg-gray-900 gap-4 min-h-screen pt-6 flex flex-col items-center justify-center sm:flex-row w-full"
       >
         {images.map((image, index) => (
-          <div key={image._id}>
+          <div key={image._id} className="flex flex-col items-center pb-4">
             <img
-              src={image.url}
+              src={image.imgurl}
               alt={`Image ${index}`}
               style={{ maxWidth: "300px" }}
             />
-            <p className="text-center text-gray-400 bg-gray-900 pt-6">
-              Description
-            </p>
-
             <button
               onClick={() => handleVote(image._id, images[1 - index]._id)}
-              className="block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4"
+              className="w-1/2 block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4"
             >
               Vote
             </button>
+            <p className="text-justify text-gray-400 bg-gray-900 pt-6 max-w-[60%]">
+              {image.desc}
+            </p>
+
           </div>
         ))}
       </div>
