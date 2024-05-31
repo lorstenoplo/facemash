@@ -44,6 +44,7 @@ export default function Home() {
               alt={`Image ${index}`}
               style={{ maxWidth: "300px" }}
             />
+            <p className="text-white font-semibold">{image.title}</p>
             <button
               onClick={() => handleVote(image._id, images[1 - index]._id)}
               className="w-1/2 block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4"
