@@ -39,7 +39,7 @@ export default function Home() {
       >
         {images.map((image, index) => (
           <div key={image._id} className="flex flex-col items-center pb-4">
-            <p className="text-gray-400 bg-gray-900 pt-6 max-w-[60%]">
+            <p className="text-lg font-bold text-gray-400 bg-gray-900 pt-6 max-w-[60%]">
               {image.title}
             </p>
             <br></br>
