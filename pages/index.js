@@ -39,14 +39,14 @@ export default function Home() {
       >
         {images.map((image, index) => (
           <div key={image._id} className="flex flex-col items-center pb-4">
+            <p className="text-gray-400 bg-gray-900 pt-6 max-w-[60%]">
+              <strong>Title:</strong> {image.title}
+            </p>
             <img
               src={image.imgurl}
               alt={`Image ${index}`}
               style={{ maxWidth: "300px" }}
             />
-            <p className="text-gray-400 bg-gray-900 pt-6 max-w-[60%]">
-              <strong>Title:</strong> {image.title}
-            </p>
             <button
               onClick={() => handleVote(image._id, images[1 - index]._id)}
               className="w-1/2 block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4"
