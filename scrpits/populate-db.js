@@ -154,8 +154,8 @@ const newUrls = [
   {
     imgurl:
       "https://lh7-us.googleusercontent.com/iZU6Vne9tBKLPL5eQA3l-04KhU4uXid_rmTWU5LjeXE_lifcIunWLlgf-m40rdNaqD84fhCkL1G7meANpULkKneaFd8u7Smk4eT5pq9AdfchfqT5azwg1BGJkWLixVqVUYE9rr29E9j14WOS=s800",
-    title: "Emergency lighting signs",
-    desc: "Emergency lighting signs play a vital role in guiding individuals to exits and safe areas during power outages or emergencies. By providing clear and visible illumination, they ensure a safe and accessible path to safety for all occupants.",
+    title: "CCTV Cameras",
+    desc: "Surveillance cameras that monitor the pod and station for security purposes.",
   },
 
   {
