@@ -1,10 +1,25 @@
 "use client";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import UserFormPopup from "./UserFormPopup";
 
 export default function Home() {
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [currentuser, setUserID] = useState();
+
+  // useEffect(() => {
+  //   console.log(currentuser); // This will log the currentuser whenever it changes
+  // }, [currentuser]);
+
+  //for the popups
+  const [showPopup, setShowPopup] = useState(true);
+
+  const handleClosePopup = () => {
+    console.log("Herer", currentuser);
+    setShowPopup(false);
+  };
+  /////////////////
 
   useEffect(() => {
     fetchImages();
@@ -16,8 +31,8 @@ export default function Home() {
     setLoading(false);
   };
 
-  const handleVote = async (winnerId, loserId) => {
-    await axios.post("/api/vote", { winnerId, loserId });
+  const handleVote = async (winnerId, loserId, userID) => {
+    await axios.post("/api/vote", { winnerId, loserId, userID });
     fetchImages();
   };
 
@@ -30,8 +45,12 @@ export default function Home() {
 
   return (
     <div>
+      {showPopup && (
+        <UserFormPopup onClose={handleClosePopup} setUserID={setUserID} />
+      )}
       <h1 className="text-center p-4 bg-gray-800 text-white font-semibold text-2xl">
-        Welcome to Safety-Showdown! Your choice will help us identify the best safety equipment for the Hyperloop transportation industry.
+        Welcome to Safety-Showdown! Your choice will help us identify the best
+        safety equipment for the Hyperloop transportation industry.
       </h1>
       <div
         style={{ display: "flex", justifyContent: "space-around" }}
@@ -49,7 +68,9 @@ export default function Home() {
               style={{ maxWidth: "300px" }}
             />
             <button
-              onClick={() => handleVote(image._id, images[1 - index]._id)}
+              onClick={() =>
+                handleVote(image._id, images[1 - index]._id, currentuser)
+              }
               className="w-1/2 block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4"
             >
               Vote
@@ -57,7 +78,6 @@ export default function Home() {
             <p className="text-justify text-gray-400 bg-gray-900 pt-6 max-w-[60%]">
               {image.desc}
             </p>
-
           </div>
         ))}
       </div>

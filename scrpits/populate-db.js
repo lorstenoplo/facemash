@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const Image = require("../models/Images.js");
 const dotenv = require("dotenv");
 
-dotenv.config({ path: "../.env.local" });
+dotenv.config({ path: "../.env" });
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
@@ -395,6 +395,7 @@ const newUrls = [
   },
 ];
 
+//here it would populate the above data in the mongoDB
 mongoose
   .connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(async () => {

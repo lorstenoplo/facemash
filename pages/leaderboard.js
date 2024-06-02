@@ -41,7 +41,8 @@ const Leaderboard = () => {
             <th className={styles.th}>Rank</th>
             <th className={styles.th}>Image</th>
             <th className={styles.th}>Wins</th>
-            <th className={styles.th}>Win Percentage</th> {/* New column for win percentage */}
+            <th className={styles.th}>Win Percentage</th>{" "}
+            {/* New column for win percentage */}
           </tr>
         </thead>
         <tbody>
@@ -56,7 +57,10 @@ const Leaderboard = () => {
                 />
               </td>
               <td className={styles.td}>{image.wins}</td>
-              <td className={styles.td}>{((image.wins / (image.wins + image.losses)) * 100).toFixed(2)}%</td> {/* Calculating win percentage */}
+              <td className={styles.td}>
+                {((image.wins / (image.wins + image.losses)) * 100).toFixed(2)}%
+              </td>{" "}
+              {/* Calculating win percentage */}
             </tr>
           ))}
         </tbody>

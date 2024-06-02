@@ -1,6 +1,8 @@
 // pages/api/vote.js
 import connectToDatabase from "../../lib/mongodb";
 import Image from "../../models/Images";
+import axios from "axios";
+import updateSurvey from "./updateSurvey";
 
 export default async function login(req, res) {
   if (req.method !== "POST") {
@@ -9,7 +11,7 @@ export default async function login(req, res) {
 
   await connectToDatabase();
 
-  const { winnerId, loserId } = req.body;
+  const { winnerId, loserId, userID } = req.body;
 
   if (!winnerId || !loserId) {
     console.error("Invalid input: winnerId or loserId missing");
@@ -19,6 +21,25 @@ export default async function login(req, res) {
   try {
     const winner = await Image.findById(winnerId);
     const loser = await Image.findById(loserId);
+
+    const selectedID = winner._id;
+    // Create a mock request and response object for the updateSurveyHandler
+    const mockReq = { body: { userID, selectedID }, method: "PUT" };
+    const mockRes = {
+      status: function (status) {
+        this.statusCode = status;
+        return this;
+      },
+      json: function (message) {
+        this.body = message;
+        return this;
+      },
+    };
+    try {
+      await updateSurvey(mockReq, mockRes);
+    } catch (error) {
+      console.error("Error recording vote: whle", error);
+    }
 
     if (!winner || !loser) {
       console.error("Image not found: ", { winnerId, loserId });
@@ -33,16 +54,17 @@ export default async function login(req, res) {
       loser.rating = 1200;
     }
 
-    console.log("Current ratings:", {
-      winnerRating: winner.rating,
-      loserRating: loser.rating,
-      winnerWins: winner.wins,
-    });
+    // console.log("Current ratings:", {
+    //   winnerRating: winner.rating,
+    //   loserRating: loser.rating,
+    //   winnerWins: winner.wins,
+    // });
 
     let Ra = winner.rating;
     let Rb = loser.rating;
     const K = 30; // This can be adjusted based on your requirements
 
+    //function to give some rating to a product
     function Probability(rating1, rating2) {
       return 1.0 / (1 + Math.pow(10, (rating2 - rating1) / 400));
     }
@@ -64,7 +86,7 @@ export default async function login(req, res) {
 
     const { updatedRa, updatedRb } = EloRating(Ra, Rb, K, true);
 
-    console.log("Updated ratings:", { updatedRa, updatedRb });
+    // console.log("Updated ratings:", { updatedRa, updatedRb });
 
     await Image.updateOne(
       { _id: winnerId },
@@ -84,12 +106,12 @@ export default async function login(req, res) {
     const updatedWinner = await Image.findById(winnerId);
     const updatedLoser = await Image.findById(loserId);
 
-    console.log("Updated winner:", updatedWinner);
-    console.log("Updated loser:", updatedLoser);
+    // console.log("Updated winner:", updatedWinner);
+    // console.log("Updated loser:", updatedLoser);
 
     res.json({ message: "Vote recorded" });
   } catch (error) {
-    console.error("Error recording vote:", error);
+    console.error("Error recording vote: acha kahi aur", error);
     res.status(500).json({ message: "Internal server error" });
   }
 }
