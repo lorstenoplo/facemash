@@ -31,14 +31,21 @@ export default function Home() {
   return (
     <div>
       <h1 className="text-center p-4 bg-gray-800 text-white font-semibold text-2xl">
-        Choose one!
+        Welcome to Safety-Showdown!
       </h1>
+      <h2 className="text-center p-4 bg-gray-800 text-white font-semibold text-2xl">
+        Choose one of the two safety equipment options based on what you feel is more important.
+      </h2>
       <div
         style={{ display: "flex", justifyContent: "space-around" }}
         className="bg-gray-900 gap-4 min-h-screen pt-6 flex flex-col items-center justify-center sm:flex-row w-full"
       >
         {images.map((image, index) => (
           <div key={image._id} className="flex flex-col items-center pb-4">
+            <p className="text-lg font-bold text-gray-400 bg-gray-900 pt-6 max-w-[60%]">
+              {image.title}
+            </p>
+            <br></br>
             <img
               src={image.imgurl}
               alt={`Image ${index}`}

@@ -1,3 +1,5 @@
+// leaderboard.js
+
 import { useEffect, useState } from "react";
 import styles from "../styles/Leaderboard.module.css";
 
@@ -31,7 +33,7 @@ const Leaderboard = () => {
   return (
     <div className="bg-gray-900">
       <h1 className="text-2xl font-semibold text-white text-center pt-3">
-        Image Leaderboard
+        Safety Equipment Rankings
       </h1>
       <table className={styles.table}>
         <thead>
@@ -39,6 +41,7 @@ const Leaderboard = () => {
             <th className={styles.th}>Rank</th>
             <th className={styles.th}>Image</th>
             <th className={styles.th}>Wins</th>
+            <th className={styles.th}>Win Percentage</th> {/* New column for win percentage */}
           </tr>
         </thead>
         <tbody>
@@ -53,6 +56,7 @@ const Leaderboard = () => {
                 />
               </td>
               <td className={styles.td}>{image.wins}</td>
+              <td className={styles.td}>{((image.wins / (image.wins + image.losses)) * 100).toFixed(2)}%</td> {/* Calculating win percentage */}
             </tr>
           ))}
         </tbody>
